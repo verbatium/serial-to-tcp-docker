@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  serial2tcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: serial2tcp
+    devices:
+      - "${SERIAL_DEVICE}:${SERIAL_DEVICE}"
+    command: >
+      socat -d -d TCP-LISTEN:${TCP_PORT},reuseaddr,fork FILE:${SERIAL_DEVICE},b${BAUD_RATE},raw,echo=0
+    restart: unless-stopped
+    # Optional: expose the port to host
+    ports:
+      - "${TCP_PORT}:${TCP_PORT}"
+
